@@ -1,41 +1,57 @@
 package kata.rock.paper.scissors;
 
-import kata.rock.paper.scissors.exception.IsNotRockPaperScissorsException;
-
 import java.util.List;
 import java.util.Objects;
+import kata.rock.paper.scissors.exception.IsNotRockPaperScissorsException;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Getter
+@Setter
 public class Game {
 
-    public static final String SCISSORS = "Scissors";
-    public static final String PAPER = "Paper";
-    public static final String ROCK = "Rock";
+  enum Choices {
+    ROCK,
+    PAPER,
+    SCISSORS
+  }
 
-    public static String play(String playerOneChoice, String playerTwoChoice) throws IsNotRockPaperScissorsException {
-        List<String> validInputs = List.of(ROCK, PAPER, SCISSORS);
+//    public static final String SCISSORS = "Scissors";
+//    public static final String PAPER = "Paper";
+//    public static final String ROCK = "Rock";
 
-        if (validInputs.contains(playerOneChoice) && (validInputs.contains(playerTwoChoice))) {
-            return checkWinner(playerOneChoice, playerTwoChoice);
-        } else {
-            throw new IsNotRockPaperScissorsException();
-        }
+  public static String play(Choices playerOneChoice, Choices playerTwoChoice)
+      throws IsNotRockPaperScissorsException {
+    List<Choices> validInputs = List.of(Choices.ROCK, Choices.PAPER, Choices.SCISSORS);
+
+    if (validInputs.contains(playerOneChoice) && (validInputs.contains(playerTwoChoice))) {
+      return checkWinner(playerOneChoice, playerTwoChoice);
+    } else {
+      throw new IsNotRockPaperScissorsException();
     }
+  }
 
-    private static String checkWinner(String playerOneChoice, String playerTwoChoice) {
-        if (Objects.equals(playerOneChoice, ROCK) && Objects.equals(playerTwoChoice, PAPER)) {
-            return "Two";
-        } else if (Objects.equals(playerOneChoice, SCISSORS) && Objects.equals(playerTwoChoice, PAPER)) {
-            return "One";
-        } else if (Objects.equals(playerOneChoice, PAPER) && Objects.equals(playerTwoChoice, ROCK)) {
-            return "One";
-        } else if (Objects.equals(playerOneChoice, PAPER) && Objects.equals(playerTwoChoice, SCISSORS)) {
-            return "Two";
-        } else if (Objects.equals(playerOneChoice, SCISSORS) && Objects.equals(playerTwoChoice, ROCK)) {
-            return "Two";
-        } else if (Objects.equals(playerOneChoice, ROCK) && Objects.equals(playerTwoChoice, SCISSORS)) {
-            return "One";
-        } else {
-            return "Draw";
-        }
+  private static String checkWinner(Choices playerOneChoice, Choices playerTwoChoice) {
+    if (playerOneChoice.equals(Choices.ROCK) && playerTwoChoice.equals(Choices.PAPER)) {
+      return "Two";
+    } else if (Objects.equals(playerOneChoice, Choices.SCISSORS) && Objects.equals(
+        playerTwoChoice, Choices.PAPER)) {
+      return "One";
+    } else if (Objects.equals(playerOneChoice, Choices.PAPER) && Objects.equals(playerTwoChoice,
+        Choices.ROCK)) {
+      return "One";
+    } else if (Objects.equals(playerOneChoice, Choices.PAPER) && Objects.equals(playerTwoChoice,
+        Choices.SCISSORS)) {
+      return "Two";
+    } else if (Objects.equals(playerOneChoice, Choices.SCISSORS) && Objects.equals(
+        playerTwoChoice, Choices.ROCK)) {
+      return "Two";
+    } else if (Objects.equals(playerOneChoice, Choices.ROCK) && Objects.equals(playerTwoChoice,
+        Choices.SCISSORS)) {
+      return "One";
+    } else {
+      return "Draw";
     }
+  }
 }
