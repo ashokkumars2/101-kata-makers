@@ -11,25 +11,20 @@ import lombok.Setter;
 @Setter
 public class Game {
 
+  private Computer computer;
+
+  public Game(Computer computer) {
+    this.computer = computer;
+  }
+
   enum Choices {
     ROCK,
     PAPER,
     SCISSORS
   }
 
-//    public static final String SCISSORS = "Scissors";
-//    public static final String PAPER = "Paper";
-//    public static final String ROCK = "Rock";
-
-  public static String play(Choices playerOneChoice, Choices playerTwoChoice)
-      throws IsNotRockPaperScissorsException {
-    List<Choices> validInputs = List.of(Choices.ROCK, Choices.PAPER, Choices.SCISSORS);
-
-    if (validInputs.contains(playerOneChoice) && (validInputs.contains(playerTwoChoice))) {
-      return checkWinner(playerOneChoice, playerTwoChoice);
-    } else {
-      throw new IsNotRockPaperScissorsException();
-    }
+  public String play(Choices playerOneChoice) {
+    return checkWinner(playerOneChoice, computer.generateMove());
   }
 
   private static String checkWinner(Choices playerOneChoice, Choices playerTwoChoice) {
