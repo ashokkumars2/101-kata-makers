@@ -2,6 +2,8 @@ package kata.rock.paper.scissors;
 
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import kata.rock.paper.scissors.Game.Choices;
 import kata.rock.paper.scissors.exception.IsNotRockPaperScissorsException;
 import org.junit.jupiter.api.Assertions;
@@ -62,9 +64,18 @@ class GameTest {
     Assertions.assertEquals("Draw", result);
   }
 
-//  @Test
-//  public void bestOfThree() {
-//
-//    Assertions.assertEquals();
-//  }
+  @Test
+  public void threeRoundsHasThreeElementsAfterPlayingThreeRounds() {
+    when(computer.generateMove()).thenReturn(Choices.PAPER);
+    game.playThreeRounds();
+    System.out.println(game.threeRounds);
+    Assertions.assertTrue(game.threeRounds.size() == 3);
+  }
+
+  @Test
+  public void bestOfThree() {
+    when(computer.generateMove()).thenReturn(Choices.PAPER);
+    String result = game.checkWinnerAfterThreeRounds();
+    Assertions.assertEquals("Player Two Wins", result);
+  }
 }
