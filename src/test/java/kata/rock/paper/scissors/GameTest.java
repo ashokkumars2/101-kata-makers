@@ -2,10 +2,8 @@ package kata.rock.paper.scissors;
 
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import kata.rock.paper.scissors.Game.Choices;
-import kata.rock.paper.scissors.exception.IsNotRockPaperScissorsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -66,16 +64,42 @@ class GameTest {
 
   @Test
   public void threeRoundsHasThreeElementsAfterPlayingThreeRounds() {
-    when(computer.generateMove()).thenReturn(Choices.PAPER);
-    game.playThreeRounds();
+    when(computer.generateMove())
+        .thenReturn(Choices.ROCK)
+        .thenReturn(Choices.PAPER)
+        .thenReturn(Choices.SCISSORS);
+    game.playThreeRounds(List.of(Choices.ROCK, Choices.SCISSORS, Choices.PAPER));
     System.out.println(game.threeRounds);
-    Assertions.assertTrue(game.threeRounds.size() == 3);
+    Assertions.assertEquals(3, game.threeRounds.size());
+    Assertions.assertEquals("Draw", game.threeRounds.get(0));
+    Assertions.assertEquals("One", game.threeRounds.get(1));
+    Assertions.assertEquals("Two", game.threeRounds.get(2));
   }
 
   @Test
-  public void bestOfThree() {
-    when(computer.generateMove()).thenReturn(Choices.PAPER);
+  public void shouldReturnPlayerTwoWinsIfPlayerTwoHasWonMoreRounds() {
+    when(computer.generateMove())
+        .thenReturn(Choices.SCISSORS)
+        .thenReturn(Choices.PAPER)
+        .thenReturn(Choices.SCISSORS);
     String result = game.checkWinnerAfterThreeRounds();
     Assertions.assertEquals("Player Two Wins", result);
+  }
+
+  @Test
+  public void shouldReturnDrawIfNoPlayerHasWonMoreRoundsThanTheOther() {
+    when(computer.generateMove()).thenReturn(Choices.ROCK);
+    String result = game.checkWinnerAfterThreeRounds();
+    Assertions.assertEquals("Draw", result);
+  }
+
+  @Test
+  public void shouldReturnPlayerOneWinsIfPlayerOneHasWonMoreRounds() {
+    when(computer.generateMove())
+        .thenReturn(Choices.ROCK)
+        .thenReturn(Choices.PAPER)
+        .thenReturn(Choices.PAPER);
+    String result = game.checkWinnerAfterThreeRounds();
+    Assertions.assertEquals("Player One Wins", result);
   }
 }

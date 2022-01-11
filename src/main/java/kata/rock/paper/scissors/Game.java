@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import kata.rock.paper.scissors.exception.IsNotRockPaperScissorsException;
-import lombok.Getter;
-import lombok.Setter;
 
 
-@Getter
-@Setter
 public class Game {
 
   public List<String> threeRounds = new ArrayList<>();
-  private Computer computer;
+  private final Computer computer;
 
   public Game(Computer computer) {
     this.computer = computer;
@@ -26,7 +21,7 @@ public class Game {
     SCISSORS
   }
 
-  public String play(Choices playerOneChoice) {
+  public String play(final Choices playerOneChoice) {
     return checkWinner(playerOneChoice, computer.generateMove());
   }
 
@@ -53,15 +48,12 @@ public class Game {
     }
   }
 
-  public List<String> playThreeRounds() {
-    for (int i = 0; i < 3; i++) {
-      threeRounds.add(play(Choices.ROCK));
-    }
-    return threeRounds;
+  public void playThreeRounds(List<Choices> playerOneChoices) {
+    playerOneChoices.forEach(choices -> threeRounds.add(play(choices)));
   }
 
   public String checkWinnerAfterThreeRounds() {
-    playThreeRounds();
+    playThreeRounds(List.of(Choices.PAPER, Choices.ROCK, Choices.SCISSORS));
     if (Collections.frequency(threeRounds, "One") >= 2) {
       return "Player One Wins";
     } else if (Collections.frequency(threeRounds, "Two") >= 2) {
