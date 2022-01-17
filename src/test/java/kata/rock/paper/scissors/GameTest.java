@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 class GameTest {
 
   Computer computer = Mockito.mock(Computer.class);
+//  Input input = Mockito.mock(Input.class);
   Game game = new Game(computer);
 
   @Test
