@@ -17,7 +17,7 @@ class InputTest {
     Choices stringToEnum = Choices.valueOf(input);
     InputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
-    Assertions.assertEquals(input, playerOneInput.getPlayerInput());
+    Assertions.assertEquals(stringToEnum, playerOneInput.getPlayerInput());
     Assertions.assertSame(stringToEnum, Choices.ROCK);
   }
 

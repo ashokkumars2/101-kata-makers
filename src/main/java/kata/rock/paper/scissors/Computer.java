@@ -10,6 +10,8 @@ public class Computer {
   public Choices generateMove() {
     Random random = new Random();
     List<Choices> choices = Arrays.asList(Choices.ROCK, Choices.SCISSORS, Choices.PAPER);
-    return choices.get(random.nextInt(choices.size()));
+    Choices computerChoice = choices.get(random.nextInt(choices.size()));
+    System.out.println(computerChoice);
+    return computerChoice;
   }
 }

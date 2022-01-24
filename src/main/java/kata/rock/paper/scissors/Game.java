@@ -10,9 +10,11 @@ public class Game {
 
   public List<String> threeRounds = new ArrayList<>();
   private final Computer computer;
+  private final Input input;
 
-  public Game(Computer computer) {
+  public Game(Computer computer, Input input) {
     this.computer = computer;
+    this.input = input;
   }
 
   enum Choices {
@@ -21,8 +23,8 @@ public class Game {
     SCISSORS
   }
 
-  public String play(final Choices playerOneChoice) {
-    return checkWinner(playerOneChoice, computer.generateMove());
+  public String play() {
+    return checkWinner(input.getPlayerInput(), computer.generateMove());
   }
 
   private static String checkWinner(Choices playerOneChoice, Choices playerTwoChoice) {
@@ -48,17 +50,22 @@ public class Game {
     }
   }
 
-  public void playThreeRounds(List<Choices> playerOneChoices) {
-    playerOneChoices.forEach(choices -> threeRounds.add(play(choices)));
+  public void playThreeRounds() {
+    for (int i = 0; i < 3; i++) {
+      threeRounds.add(play());
+    }
   }
 
   public String checkWinnerAfterThreeRounds() {
-    playThreeRounds(List.of(Choices.PAPER, Choices.ROCK, Choices.SCISSORS));
-    if (Collections.frequency(threeRounds, "One") >= 2) {
+    playThreeRounds();
+    if (Collections.frequency(threeRounds, "One") > Collections.frequency(threeRounds, "Two")) {
+      System.out.println("Player One Wins");
       return "Player One Wins";
-    } else if (Collections.frequency(threeRounds, "Two") >= 2) {
+    } else if (Collections.frequency(threeRounds, "Two") > Collections.frequency(threeRounds, "One")) {
+      System.out.println("Player Two Wins");
       return "Player Two Wins";
     } else {
+      System.out.println("Draw");
       return "Draw";
     }
   }
