@@ -13,5 +13,9 @@ public class StreamExercise {
         .collect(Collectors.toList()).get(0);
   }
 
+//  Get me the average age of my list of pupils from my List<Pupil>
+  public static double averageAge(List<Pupil> pupils) {
+    return pupils.stream().mapToInt(Pupil::getAge).average().getAsDouble();
+  }
 
 }

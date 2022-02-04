@@ -14,6 +14,7 @@ public class DrivingLicence {
 
   public static String driver(final String[] data) throws ParseException {
 
+//    {"John",    "James",  "Smith", "01-Jan-2000",       "M"}
     String [] date = data[3].split("-");
 //    The first five characters of the surname (padded with 9s if less than 5 characters)
     String firstFive = (data[2] + "99999").substring(0, 5).toUpperCase();

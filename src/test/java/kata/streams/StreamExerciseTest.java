@@ -1,5 +1,7 @@
 package kata.streams;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import kata.streams.StreamExercise;
@@ -19,7 +21,18 @@ class StreamExerciseTest {
     numbers.add(100);
     numbers.add(101);
     numbers.add(133);
-    Assertions.assertEquals(101, streamExercise.greaterThanHundred(numbers));
+    assertEquals(101, streamExercise.greaterThanHundred(numbers));
+  }
+
+  @Test
+  public void averageAge() {
+    List<Pupil> pupils = new ArrayList<>();
+    pupils.add(new Pupil(2));
+    pupils.add(new Pupil(7));
+    pupils.add(new Pupil(5));
+    pupils.add(new Pupil(12));
+    assertEquals(6.5, StreamExercise.averageAge(pupils));
+
   }
 
 }
