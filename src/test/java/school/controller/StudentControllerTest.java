@@ -5,8 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,10 @@ import static org.mockito.Mockito.verify;
 @AutoConfigureMockMvc
 class StudentControllerTest {
 
+  public static final String STUDENT_URL = "/student";
+  @Captor
+  ArgumentCaptor<Student> studentArgumentCaptor;
+
   @Autowired
   private MockMvc mockMvc;
 
@@ -40,17 +47,18 @@ class StudentControllerTest {
 
   @Test
   public void shouldReturnOk() throws Exception {
-    mockMvc.perform(post("/student"))
+    mockMvc.perform(post(STUDENT_URL))
         .andExpect(status().isOk());
   }
 
   @Test
-  public void shouldSendAStudentToTheStudentService() throws Exception {
-    Student student = new Student();
-    studentController.createStudent(student);
-//    mockMvc.perform(post("/student").contentType(MediaType.APPLICATION_JSON).content("{}"))
-//        .andExpect(status().isOk());
-    verify(studentService).createStudent(student);
+  public void shouldSendAStudentWithCorrectNameToTheStudentService() throws Exception {
+
+    mockMvc.perform(post(STUDENT_URL).contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Lauren\"}"))
+        .andExpect(status().isOk());
+
+    verify(studentService).createStudent(studentArgumentCaptor.capture());
+    Assertions.assertThat("Lauren").isEqualTo(studentArgumentCaptor.getValue().getName());
 
   }
 
