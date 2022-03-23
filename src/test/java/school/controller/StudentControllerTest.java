@@ -62,4 +62,10 @@ class StudentControllerTest {
 
   }
 
+  @Test
+  public void shouldSendAStudentWithCorrectParametersToTheStudentService() {
+
+
+  }
+
 }
