@@ -1,10 +1,12 @@
 package school.service;
 
+import org.springframework.stereotype.Service;
 import school.model.Student;
 
+@Service
 public class StudentService {
 
-  public void createStudent(Student student) {
-
+  public Long createStudent(Student student) {
+    return null;
   }
 }

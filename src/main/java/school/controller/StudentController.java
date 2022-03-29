@@ -3,7 +3,6 @@ package school.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import school.model.Student;
 import school.service.StudentService;
@@ -15,8 +14,8 @@ public class StudentController {
   StudentService studentService;
 
   @PostMapping("/student")
-  public void createStudent(@RequestBody Student student) {
-    studentService.createStudent(student);
+  public Long createStudent(@RequestBody Student student) {
+    return studentService.createStudent(student);
   }
 
 
