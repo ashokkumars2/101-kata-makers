@@ -53,12 +53,6 @@ class StudentControllerTest {
   }
 
   @Test
-  public void shouldReturnOk() throws Exception {
-    mockMvc.perform(post(STUDENT_URL))
-        .andExpect(status().isOk());
-  }
-
-  @Test
   public void shouldSendAStudentWithCorrectParametersToTheStudentService() throws Exception {
 
     String payload = new ObjectMapper().writeValueAsString(getStudent());
