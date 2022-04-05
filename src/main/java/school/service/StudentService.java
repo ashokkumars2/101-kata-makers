@@ -17,7 +17,9 @@ public class StudentService {
     studentEntity.setFirstName(student.getFirstName());
     studentEntity.setLastName(student.getLastName());
     studentEntity.setAge(student.getAge());
-    studentRepository.save(studentEntity);
-    return null;
+
+    StudentEntity studentEntityResponse = studentRepository.save(studentEntity);
+
+    return studentEntityResponse.getId();
   }
 }

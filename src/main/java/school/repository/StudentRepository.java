@@ -1,12 +1,12 @@
 package school.repository;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import school.entity.StudentEntity;
 
 @Repository
-public class StudentRepository {
+public interface StudentRepository extends CrudRepository<StudentEntity, Long> {
 
-  public void save(StudentEntity studentEntity) {
 
-  }
+  StudentEntity findByFirstName(String firstName);
 }
