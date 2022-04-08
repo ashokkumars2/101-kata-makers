@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,10 @@ public class StudentServiceTest {
   @Test
   public void willSaveStudentInTheRepository() {
 
+    StudentEntity studentEntity = new StudentEntity();
+
+    when(studentRepository.save(any())).thenReturn(studentEntity);
+
     studentService.createStudent(getStudent());
 
     verify(studentRepository).save(argumentCaptor.capture());
@@ -61,6 +66,18 @@ public class StudentServiceTest {
     when(studentRepository.save(any())).thenReturn(studentEntity);
 
     Assertions.assertEquals(TEST_ID, studentService.createStudent(getStudent()));
+  }
+
+  @Test
+  public void shouldReturnTheCorrectStudentWhenFindingById() {
+
+    StudentEntity studentEntity = new StudentEntity();
+    studentEntity.setId(TEST_ID);
+    studentEntity.setFirstName(TEST_STUDENT_FIRST_NAME);
+
+    when(studentRepository.findById(any())).thenReturn(Optional.of(studentEntity));
+
+    Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, studentService.findStudentById(TEST_ID).getFirstName());
   }
 
   private Student getStudent() {

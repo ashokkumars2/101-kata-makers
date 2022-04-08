@@ -1,5 +1,6 @@
 package school.service;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import school.entity.StudentEntity;
@@ -21,5 +22,16 @@ public class StudentService {
     StudentEntity studentEntityResponse = studentRepository.save(studentEntity);
 
     return studentEntityResponse.getId();
+  }
+
+  public Student findStudentById(long id) {
+    Optional<StudentEntity> studentEntityOptional = studentRepository.findById(id);
+
+    Student student = new Student();
+    student.setFirstName(studentEntityOptional.get().getFirstName());
+    student.setLastName(studentEntityOptional.get().getLastName());
+    student.setAge(studentEntityOptional.get().getAge());
+
+    return student;
   }
 }
