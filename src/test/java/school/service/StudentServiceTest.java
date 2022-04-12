@@ -14,6 +14,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import school.entity.StudentEntity;
+import school.exception.StudentDoesNotExistException;
 import school.model.Student;
 import school.repository.StudentRepository;
 
@@ -69,7 +70,7 @@ public class StudentServiceTest {
   }
 
   @Test
-  public void shouldReturnTheCorrectStudentWhenFindingById() {
+  public void shouldReturnTheCorrectStudentWhenFindingById() throws StudentDoesNotExistException {
 
     StudentEntity studentEntity = new StudentEntity();
     studentEntity.setId(TEST_ID);
@@ -78,6 +79,14 @@ public class StudentServiceTest {
     when(studentRepository.findById(any())).thenReturn(Optional.of(studentEntity));
 
     Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, studentService.findStudentById(TEST_ID).getFirstName());
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenStudentDoesNotExist() {
+
+    when(studentRepository.findById(any())).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(StudentDoesNotExistException.class, () -> studentService.findStudentById(TEST_ID));
   }
 
   private Student getStudent() {

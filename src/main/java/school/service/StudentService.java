@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import school.entity.StudentEntity;
+import school.exception.StudentDoesNotExistException;
 import school.model.Student;
 import school.repository.StudentRepository;
 
@@ -24,13 +25,15 @@ public class StudentService {
     return studentEntityResponse.getId();
   }
 
-  public Student findStudentById(long id) {
+  public Student findStudentById(long id) throws StudentDoesNotExistException {
     Optional<StudentEntity> studentEntityOptional = studentRepository.findById(id);
 
+    StudentEntity studentEntity = studentEntityOptional.orElseThrow(() -> new StudentDoesNotExistException(id));
+
     Student student = new Student();
-    student.setFirstName(studentEntityOptional.get().getFirstName());
-    student.setLastName(studentEntityOptional.get().getLastName());
-    student.setAge(studentEntityOptional.get().getAge());
+    student.setFirstName(studentEntity.getFirstName());
+    student.setLastName(studentEntity.getLastName());
+    student.setAge(studentEntity.getAge());
 
     return student;
   }
