@@ -8,3 +8,5 @@ spring:
     console.enabled: true
   jpa:
     spring.jpa.database-platfom: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none

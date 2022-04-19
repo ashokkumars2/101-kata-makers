@@ -86,7 +86,7 @@ class StudentControllerTest {
 
     when(studentService.findStudentById(1L)).thenReturn(getStudent());
 
-    mockMvc.perform(get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("Student ID","1"))
+    mockMvc.perform(get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("student-id","1"))
         .andExpect(status().isOk())
         .andExpect(content().string(new ObjectMapper().writeValueAsString(getStudent())));
   }
