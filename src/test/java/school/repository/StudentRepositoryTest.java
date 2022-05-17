@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.*;
+import org.springframework.test.context.ActiveProfiles;
 import school.entity.StudentEntity;
 
+@ActiveProfiles("test")
 @DataJpaTest
 class StudentRepositoryTest {
 
@@ -32,7 +34,7 @@ class StudentRepositoryTest {
 
     createStudentEntityInDatabase();
 
-    Optional<StudentEntity> result = studentRepository.findById(1L);
+    Optional<StudentEntity> result = studentRepository.findById(6L);
 
     Assertions.assertEquals(TEST_FIRST_NAME, result.get().getFirstName());
   }
