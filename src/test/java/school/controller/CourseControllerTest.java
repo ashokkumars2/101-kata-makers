@@ -40,9 +40,6 @@ public class CourseControllerTest {
   void shouldSendACourseWithTheCorrectParametersToTheCourseService()
       throws Exception {
 
-//    POST request of a course to the service
-// course is sent to the service and we get 200 response
-
     String payload = new ObjectMapper().writeValueAsString(getCourse());
 
     mockMvc.perform(post(COURSE_URL).contentType(MediaType.APPLICATION_JSON).content(payload))
@@ -50,16 +47,16 @@ public class CourseControllerTest {
 
     verify(courseService).createCourse(courseArgumentCaptor.capture());
     Course result = courseArgumentCaptor.getValue();
-    Assertions.assertThat(TEST_COURSE_NAME).isEqualTo(result.getCourseName());
+    Assertions.assertThat(TEST_COURSE_NAME).isEqualTo(result.getName());
     Assertions.assertThat(TEST_COURSE_CREDITS).isEqualTo(result.getCredits());
     Assertions.assertThat(TEST_COURSE_PROFESSOR).isEqualTo(result.getProfessor());
   }
 
   private Course getCourse() {
     return Course.builder()
-        .courseName("English")
-        .credits(100)
-        .professor("Professor Jablonska")
+        .name(TEST_COURSE_NAME)
+        .credits(TEST_COURSE_CREDITS)
+        .professor(TEST_COURSE_PROFESSOR)
         .build();
   }
 

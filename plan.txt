@@ -6,3 +6,4 @@ Course
 
 One student can take many courses,
 One course can be taken by many students
+

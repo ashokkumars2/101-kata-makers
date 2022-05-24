@@ -7,13 +7,7 @@ import lombok.Getter;
 @Builder
 public class Course {
 
-  String courseName;
+  String name;
   Integer credits;
   String professor;
-
-  public Course(String courseName, Integer credits, String professor) {
-    this.courseName = courseName;
-    this.credits = credits;
-    this.professor = professor;
-  }
 }
