@@ -1,13 +1,18 @@
 package school.entity;
 
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import school.model.Course;
 
 @Getter
 @Setter
@@ -25,6 +30,14 @@ public class StudentEntity {
   String lastName;
   @Column(name = "age")
   Integer age;
+
+  @ManyToMany
+  @JoinTable(
+      name = "courses_taken",
+      joinColumns = @JoinColumn(name = "student_id"),
+      inverseJoinColumns = @JoinColumn(name = "course_id"))
+  Set<CourseEntity> coursesTaken;
+
 
   public StudentEntity(String firstName, String lastName, Integer age) {
     this.firstName = firstName;

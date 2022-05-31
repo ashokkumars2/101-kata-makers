@@ -14,3 +14,7 @@ name VARCHAR(250),
 professor VARCHAR(250),
 credits TINYINT,
 primary key(id));
+
+CREATE TABLE courses_taken (
+student_id BIGINT,
+course_id BIGINT);
