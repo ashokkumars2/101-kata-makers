@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS students;
+DROP TABLE IF EXISTS courses;
+
 CREATE TABLE students (
 id BIGINT IDENTITY,
 age TINYINT,
