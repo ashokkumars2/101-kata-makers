@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,8 @@ public class StudentServiceTest {
   public static final String TEST_STUDENT_LAST_NAME = "Jablonska";
   public static final int TEST_STUDENT_AGE = 18;
   public static final long TEST_ID = 1L;
+  public static final String TEST_STUDENT_NUMBER = "jablonskae";
+  public static final String TEST_STUDENT_NUMBER_UNIQUE = "jablonskae3";
 
   @Mock
   private StudentRepository studentRepository;
@@ -55,6 +58,7 @@ public class StudentServiceTest {
     Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, result.getFirstName());
     Assertions.assertEquals(TEST_STUDENT_LAST_NAME, result.getLastName());
     Assertions.assertEquals(TEST_STUDENT_AGE, result.getAge());
+    Assertions.assertEquals(TEST_STUDENT_NUMBER, result.getStudentNumber());
 
   }
 
@@ -66,7 +70,7 @@ public class StudentServiceTest {
 
     when(studentRepository.save(any())).thenReturn(studentEntity);
 
-    Assertions.assertEquals(TEST_ID, studentService.createStudent(getStudent()));
+    Assertions.assertEquals(TEST_STUDENT_NUMBER, studentService.createStudent(getStudent()));
   }
 
   @Test
@@ -86,8 +90,24 @@ public class StudentServiceTest {
 
     when(studentRepository.findById(any())).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(StudentDoesNotExistException.class, () -> studentService.findStudentById(TEST_ID));
+    Assertions.assertThrows(StudentDoesNotExistException.class,
+        () -> studentService.findStudentById(TEST_ID));
   }
+
+  @Test
+  public void shouldCreateUniqueStudentNumber() {
+
+//    check the database (first and last name)
+//    if they already exist then take the latest result and increment it by one
+//    save and return new student
+    when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(
+        List.of(TEST_STUDENT_NUMBER, "jablonskae1", "jablonskae2"));
+    String result = studentService.createStudent(getStudent());
+
+    Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE, result);
+  }
+
+//  test empty list behavior
 
   private Student getStudent() {
     Student student = new Student();

@@ -74,11 +74,11 @@ class StudentControllerTest {
 
     String payload = new ObjectMapper().writeValueAsString(getStudent());
 
-    when(studentService.createStudent(any(Student.class))).thenReturn(2L);
+    when(studentService.createStudent(any(Student.class))).thenReturn("abc");
 
     mockMvc.perform(post(STUDENT_URL).contentType(MediaType.APPLICATION_JSON).content(payload))
         .andExpect(status().isOk())
-            .andExpect(content().string("2"));
+            .andExpect(content().string("abc"));
   }
 
   @Test

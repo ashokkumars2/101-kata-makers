@@ -30,6 +30,8 @@ public class StudentEntity {
   String lastName;
   @Column(name = "age")
   Integer age;
+  @Column (name = "student_number")
+  String studentNumber;
 
   @ManyToMany
   @JoinTable(

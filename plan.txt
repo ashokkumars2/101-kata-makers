@@ -10,3 +10,8 @@ One course can be taken by many students
 ---------
 
 Many To Many relationship
+
+----------
+I want to be able to assign courses to a student
+
+- controller accepts student id and course id
