@@ -26,7 +26,8 @@ public class StudentServiceTest {
   public static final int TEST_STUDENT_AGE = 18;
   public static final long TEST_ID = 1L;
   public static final String TEST_STUDENT_NUMBER = "jablonskae";
-  public static final String TEST_STUDENT_NUMBER_UNIQUE = "jablonskae3";
+  public static final String TEST_STUDENT_NUMBER_UNIQUE_3 = "jablonskae3";
+  public static final String TEST_STUDENT_NUMBER_UNIQUE_1 = "jablonskae1";
 
   @Mock
   private StudentRepository studentRepository;
@@ -95,19 +96,32 @@ public class StudentServiceTest {
   }
 
   @Test
-  public void shouldCreateUniqueStudentNumber() {
+  void shouldCreateUniqueStudentNumberIfNameAlreadyExists() {
 
-//    check the database (first and last name)
-//    if they already exist then take the latest result and increment it by one
-//    save and return new student
     when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(
-        List.of(TEST_STUDENT_NUMBER, "jablonskae1", "jablonskae2"));
+        List.of(TEST_STUDENT_NUMBER, TEST_STUDENT_NUMBER_UNIQUE_1, "jablonskae2"));
     String result = studentService.createStudent(getStudent());
 
-    Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE, result);
+    Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_3, result);
   }
 
-//  test empty list behavior
+  @Test
+  void shouldCreateUniqueStudentNumberIfNameDoesNotExist() {
+
+    when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(List.of());
+    String result = studentService.createStudent(getStudent());
+
+    Assertions.assertEquals(TEST_STUDENT_NUMBER, result);
+  }
+
+  @Test
+  void shouldCreateUniqueStudentNumberIfOneNameExistsInDatabase() {
+
+    when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(List.of(TEST_STUDENT_NUMBER));
+    String result = studentService.createStudent(getStudent());
+
+    Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_1, result);
+  }
 
   private Student getStudent() {
     Student student = new Student();

@@ -2,19 +2,17 @@ package school.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import school.entity.StudentEntity;
 import school.exception.StudentDoesNotExistException;
-import school.model.Course;
 import school.model.Student;
 import school.repository.StudentRepository;
 
 @Service
 public class StudentService {
 
+  public static final String REGEX_FOR_SPLITTING_LETTERS_AND_DIGITS = "(?<=\\D)(?=\\d)";
   @Autowired
   StudentRepository studentRepository;
 
@@ -34,7 +32,8 @@ public class StudentService {
   public Student findStudentById(long id) throws StudentDoesNotExistException {
     Optional<StudentEntity> studentEntityOptional = studentRepository.findById(id);
 
-    StudentEntity studentEntity = studentEntityOptional.orElseThrow(() -> new StudentDoesNotExistException(id));
+    StudentEntity studentEntity = studentEntityOptional.orElseThrow(
+        () -> new StudentDoesNotExistException(id));
 
     Student student = new Student();
     student.setFirstName(studentEntity.getFirstName());
@@ -46,24 +45,22 @@ public class StudentService {
 
   private void addStudentNumberTo(StudentEntity studentEntity) {
 
-    String studentNumber = (studentEntity.getLastName() + studentEntity.getFirstName().charAt(0)).toLowerCase();
+    String studentNumber = (studentEntity.getLastName() + studentEntity.getFirstName()
+        .charAt(0)).toLowerCase();
 
     List<String> likeStudentNumbers = studentRepository.findLikeStudentNumber(studentNumber);
 
-    if(likeStudentNumbers.isEmpty()) {
+    if (likeStudentNumbers.isEmpty()) {
       studentEntity.setStudentNumber(studentNumber);
     } else {
-      OptionalInt lastNumber = likeStudentNumbers.stream()
-          .map(likeStudentNumber -> likeStudentNumber.split("(?<=\\D)(?=\\d)"))
+      likeStudentNumbers.stream()
+          .map(likeStudentNumber -> likeStudentNumber.split(REGEX_FOR_SPLITTING_LETTERS_AND_DIGITS))
           .filter(splitStudentNumber -> splitStudentNumber.length > 1)
           .map(splitStudentNumber -> splitStudentNumber[1])
           .mapToInt(Integer::valueOf)
-          .max();
-      if (lastNumber.isPresent()) {
-        studentEntity.setStudentNumber(studentNumber + (lastNumber.getAsInt() + 1));
-      } else {
-//        write test
-      }
+          .max()
+          .ifPresentOrElse(number -> studentEntity.setStudentNumber(studentNumber + (number + 1)),
+              () -> studentEntity.setStudentNumber(studentNumber + 1));
     }
   }
 }
