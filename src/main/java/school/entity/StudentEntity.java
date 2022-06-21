@@ -41,10 +41,11 @@ public class StudentEntity {
   Set<CourseEntity> coursesTaken;
 
 
-  public StudentEntity(String firstName, String lastName, Integer age) {
+  public StudentEntity(String firstName, String lastName, Integer age, String studentNumber) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
+    this.studentNumber = studentNumber;
   }
 
   public StudentEntity() {

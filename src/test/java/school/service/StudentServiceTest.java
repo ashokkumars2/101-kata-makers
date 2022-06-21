@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -98,17 +99,27 @@ public class StudentServiceTest {
   @Test
   void shouldCreateUniqueStudentNumberIfNameAlreadyExists() {
 
-    when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(
-        List.of(TEST_STUDENT_NUMBER, TEST_STUDENT_NUMBER_UNIQUE_1, "jablonskae2"));
-    String result = studentService.createStudent(getStudent());
+    ArrayList<StudentEntity> result = new ArrayList<>();
+    StudentEntity studentEntity = new StudentEntity();
+    studentEntity.setStudentNumber(TEST_STUDENT_NUMBER);
+    StudentEntity studentEntityTwo = new StudentEntity();
+    studentEntityTwo.setStudentNumber(TEST_STUDENT_NUMBER_UNIQUE_1);
+    StudentEntity studentEntityThree = new StudentEntity();
+    studentEntityThree.setStudentNumber("jablonskae2");
+    result.add(studentEntity);
+    result.add(studentEntityTwo);
+    result.add(studentEntityThree);
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(
+        result);
+    String result2 = studentService.createStudent(getStudent());
 
-    Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_3, result);
+    Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_3, result2);
   }
 
   @Test
   void shouldCreateUniqueStudentNumberIfNameDoesNotExist() {
 
-    when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(List.of());
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(new ArrayList<>());
     String result = studentService.createStudent(getStudent());
 
     Assertions.assertEquals(TEST_STUDENT_NUMBER, result);
@@ -117,10 +128,24 @@ public class StudentServiceTest {
   @Test
   void shouldCreateUniqueStudentNumberIfOneNameExistsInDatabase() {
 
-    when(studentRepository.findLikeStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(List.of(TEST_STUDENT_NUMBER));
+    ArrayList<StudentEntity> array = new ArrayList<>();
+    StudentEntity studentEntity = new StudentEntity();
+    studentEntity.setStudentNumber(TEST_STUDENT_NUMBER);
+    array.add(studentEntity);
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(array);
     String result = studentService.createStudent(getStudent());
 
     Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_1, result);
+  }
+
+  @Test
+  public void shouldAlwaysCallFindByStudentNumberLikeWithAWildcard() {
+
+    Student student = new Student();
+    student.setFirstName("Susan");
+    student.setLastName("Smith");
+    studentService.createStudent(student);
+    verify(studentRepository).findByStudentNumberLike("smiths%");
   }
 
   private Student getStudent() {

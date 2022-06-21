@@ -48,12 +48,13 @@ public class StudentService {
     String studentNumber = (studentEntity.getLastName() + studentEntity.getFirstName()
         .charAt(0)).toLowerCase();
 
-    List<String> likeStudentNumbers = studentRepository.findLikeStudentNumber(studentNumber);
+    List<StudentEntity> likeStudentNumbers = studentRepository.findByStudentNumberLike(studentNumber + "%");
 
     if (likeStudentNumbers.isEmpty()) {
       studentEntity.setStudentNumber(studentNumber);
     } else {
       likeStudentNumbers.stream()
+          .map(StudentEntity::getStudentNumber)
           .map(likeStudentNumber -> likeStudentNumber.split(REGEX_FOR_SPLITTING_LETTERS_AND_DIGITS))
           .filter(splitStudentNumber -> splitStudentNumber.length > 1)
           .map(splitStudentNumber -> splitStudentNumber[1])
