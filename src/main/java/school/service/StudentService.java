@@ -2,10 +2,12 @@ package school.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import school.entity.StudentEntity;
 import school.exception.StudentDoesNotExistException;
+import school.model.Course;
 import school.model.Student;
 import school.repository.StudentRepository;
 
@@ -40,6 +42,14 @@ public class StudentService {
     student.setLastName(studentEntity.getLastName());
     student.setAge(studentEntity.getAge());
 
+    List<Course> courses = studentEntity.getCoursesTaken()
+        .stream()
+        .map(courseEntity -> Course.builder().credits(courseEntity.getCredits())
+            .professor(courseEntity.getProfessor()).name(courseEntity.getName()).build())
+        .collect(Collectors.toList());
+
+    student.setCoursesTaken(courses);
+
     return student;
   }
 
@@ -48,7 +58,8 @@ public class StudentService {
     String studentNumber = (studentEntity.getLastName() + studentEntity.getFirstName()
         .charAt(0)).toLowerCase();
 
-    List<StudentEntity> likeStudentNumbers = studentRepository.findByStudentNumberLike(studentNumber + "%");
+    List<StudentEntity> likeStudentNumbers = studentRepository.findByStudentNumberLike(
+        studentNumber + "%");
 
     if (likeStudentNumbers.isEmpty()) {
       studentEntity.setStudentNumber(studentNumber);

@@ -8,6 +8,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import school.entity.CourseEntity;
 import school.entity.StudentEntity;
 import school.exception.StudentDoesNotExistException;
 import school.model.Student;
@@ -29,6 +31,7 @@ public class StudentServiceTest {
   public static final String TEST_STUDENT_NUMBER = "jablonskae";
   public static final String TEST_STUDENT_NUMBER_UNIQUE_3 = "jablonskae3";
   public static final String TEST_STUDENT_NUMBER_UNIQUE_1 = "jablonskae1";
+  public static final String TEST_COURSE_NAME = "History";
 
   @Mock
   private StudentRepository studentRepository;
@@ -82,9 +85,18 @@ public class StudentServiceTest {
     studentEntity.setId(TEST_ID);
     studentEntity.setFirstName(TEST_STUDENT_FIRST_NAME);
 
+    CourseEntity courseEntity = new CourseEntity();
+    courseEntity.setId(TEST_ID);
+    courseEntity.setName(TEST_COURSE_NAME);
+
+    studentEntity.setCoursesTaken(Set.of(courseEntity));
+
     when(studentRepository.findById(any())).thenReturn(Optional.of(studentEntity));
 
-    Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, studentService.findStudentById(TEST_ID).getFirstName());
+    Student result = studentService.findStudentById(TEST_ID);
+
+    Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, result.getFirstName());
+    Assertions.assertEquals(TEST_COURSE_NAME, result.getCoursesTaken().get(0).getName());
   }
 
   @Test
@@ -109,7 +121,7 @@ public class StudentServiceTest {
     result.add(studentEntity);
     result.add(studentEntityTwo);
     result.add(studentEntityThree);
-    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER + "%")).thenReturn(
         result);
     String result2 = studentService.createStudent(getStudent());
 
@@ -132,7 +144,7 @@ public class StudentServiceTest {
     StudentEntity studentEntity = new StudentEntity();
     studentEntity.setStudentNumber(TEST_STUDENT_NUMBER);
     array.add(studentEntity);
-    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(array);
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER + "%")).thenReturn(array);
     String result = studentService.createStudent(getStudent());
 
     Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_1, result);

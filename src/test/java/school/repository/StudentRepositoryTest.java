@@ -37,7 +37,7 @@ class StudentRepositoryTest {
 
     createStudentEntityInDatabase();
 
-    Optional<StudentEntity> result = studentRepository.findById(6L);
+    Optional<StudentEntity> result = studentRepository.findById(7L);
 
     Assertions.assertEquals(TEST_FIRST_NAME, result.get().getFirstName());
   }
