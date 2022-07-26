@@ -22,6 +22,7 @@ class CourseServiceTest {
   private static final String TEST_COURSE_NAME = "English";
   private static final Integer TEST_COURSE_CREDITS = 100;
   private static final String TEST_COURSE_PROFESSOR = "Professor Jablonska";
+  public static final String TEST_COURSE_ENTITY_NUMBER = "ENG";
 
   @Mock
   private CourseRepository courseRepository;
@@ -52,6 +53,17 @@ class CourseServiceTest {
     Assertions.assertEquals(TEST_COURSE_NAME, result.getName());
     Assertions.assertEquals(TEST_COURSE_CREDITS, result.getCredits());
     Assertions.assertEquals(TEST_COURSE_PROFESSOR, result.getProfessor());
+  }
+
+  @Test
+  public void shouldCreateCourseEntityNumberFromTheCourseName() {
+
+    courseService.createCourse(getCourse());
+    verify(courseRepository).save(courseEntityCaptor.capture());
+
+    CourseEntity result = courseEntityCaptor.getValue();
+
+    Assertions.assertEquals(TEST_COURSE_ENTITY_NUMBER, result.getCourseNumber());
   }
 
   private Course getCourse() {

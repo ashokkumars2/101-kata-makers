@@ -23,6 +23,7 @@ public class CourseEntity {
   private String professor;
   private String name;
   private Integer credits;
+  private String courseNumber;
 
   @ManyToMany(mappedBy = "coursesTaken")
   Set<StudentEntity> takenBy;

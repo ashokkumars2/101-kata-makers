@@ -18,6 +18,7 @@ public class CourseService {
     courseEntity.setName(course.getName());
     courseEntity.setCredits(course.getCredits());
     courseEntity.setProfessor(course.getProfessor());
+    courseEntity.setCourseNumber(course.getName().substring(0, 3).toUpperCase());
 
     courseRepository.save(courseEntity);
   }
