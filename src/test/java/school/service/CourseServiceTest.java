@@ -23,6 +23,10 @@ class CourseServiceTest {
   private static final Integer TEST_COURSE_CREDITS = 100;
   private static final String TEST_COURSE_PROFESSOR = "Professor Jablonska";
   public static final String TEST_COURSE_ENTITY_NUMBER = "ENG";
+  public static final String TEST_COURSE_NAME_TWO_WORDS = "English Literature";
+  public static final String TEST_COURSE_ENTITY_NUMBER_TWO_WORDS = "ENG_LIT";
+  public static final String TEST_COURSE_NAME_FOUR_WORDS = "History of Pi 1";
+  public static final String TEST_COURSE_NUMBER_FOUR_WORDS = "HIS_OF_PI_1";
 
   @Mock
   private CourseRepository courseRepository;
@@ -32,6 +36,7 @@ class CourseServiceTest {
 
   @Captor
   ArgumentCaptor<CourseEntity> courseEntityCaptor;
+
   @BeforeEach
   public void setUp() {
     openMocks(this);
@@ -56,7 +61,7 @@ class CourseServiceTest {
   }
 
   @Test
-  public void shouldCreateCourseEntityNumberFromTheCourseName() {
+  public void shouldCreateCourseEntityNumberFromTheCourseNameWithOneWord() {
 
     courseService.createCourse(getCourse());
     verify(courseRepository).save(courseEntityCaptor.capture());
@@ -64,6 +69,34 @@ class CourseServiceTest {
     CourseEntity result = courseEntityCaptor.getValue();
 
     Assertions.assertEquals(TEST_COURSE_ENTITY_NUMBER, result.getCourseNumber());
+  }
+
+  @Test
+  public void shouldCreateCourseEntityNumberFromACourseNameWithTwoWords() {
+    Course course = Course.builder()
+        .name(TEST_COURSE_NAME_TWO_WORDS)
+        .build();
+    courseService.createCourse(course);
+    verify(courseRepository).save(courseEntityCaptor.capture());
+
+    CourseEntity result = courseEntityCaptor.getValue();
+
+    Assertions.assertEquals(TEST_COURSE_ENTITY_NUMBER_TWO_WORDS, result.getCourseNumber());
+
+  }
+
+  @Test
+  public void shouldCreateCourseEntityNumberFromACourseNameWithFourWords() {
+    Course course = Course.builder()
+        .name(TEST_COURSE_NAME_FOUR_WORDS)
+        .build();
+    courseService.createCourse(course);
+    verify(courseRepository).save(courseEntityCaptor.capture());
+
+    CourseEntity result = courseEntityCaptor.getValue();
+
+    Assertions.assertEquals(TEST_COURSE_NUMBER_FOUR_WORDS, result.getCourseNumber());
+
   }
 
   private Course getCourse() {
