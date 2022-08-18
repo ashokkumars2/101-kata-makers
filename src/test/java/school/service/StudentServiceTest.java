@@ -160,6 +160,17 @@ public class StudentServiceTest {
     verify(studentRepository).findByStudentNumberLike("smiths%");
   }
 
+  @Test
+  public void shouldFindStudentByStudentNumber() {
+
+//    find student by student number
+//    find course by course number
+//    add course to the list of courses taken
+//    save student
+    studentService.enrollStudent(TEST_STUDENT_NUMBER, "ENG");
+    verify(studentRepository).findByStudentNumber(TEST_STUDENT_NUMBER);
+  }
+
   private Student getStudent() {
     Student student = new Student();
 

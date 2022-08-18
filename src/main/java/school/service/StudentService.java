@@ -75,4 +75,9 @@ public class StudentService {
               () -> studentEntity.setStudentNumber(studentNumber + 1));
     }
   }
+
+  public void enrollStudent(String studentNumber, String courseEntityNumber) {
+
+    studentRepository.findByStudentNumber(studentNumber);
+  }
 }

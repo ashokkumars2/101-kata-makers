@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import school.exception.StudentDoesNotExistException;
+import school.model.Course;
 import school.model.Student;
 import school.service.StudentService;
 
@@ -37,6 +39,9 @@ class StudentControllerTest {
   public static final String TEST_STUDENT_FIRST_NAME = "Ewa";
   public static final String TEST_STUDENT_LAST_NAME = "Jablonska";
   public static final int TEST_STUDENT_AGE = 18;
+  public static final String TEST_STUDENT_NUMBER = "jablonskae";
+  public static final String TEST_COURSE_ENTITY_NUMBER = "ENG";
+
   @Captor
   ArgumentCaptor<Student> studentArgumentCaptor;
 
@@ -89,6 +94,16 @@ class StudentControllerTest {
     mockMvc.perform(get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("student-id","1"))
         .andExpect(status().isOk())
         .andExpect(content().string(new ObjectMapper().writeValueAsString(getStudent())));
+  }
+
+  @Test
+  public void shouldEnrollStudentToACourse() throws Exception {
+
+    mockMvc.perform(post("/enroll/{studentNumber}/{courseNumber}", TEST_STUDENT_NUMBER, TEST_COURSE_ENTITY_NUMBER))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    verify(studentService).enrollStudent(TEST_STUDENT_NUMBER, TEST_COURSE_ENTITY_NUMBER);
   }
 
   private Student getStudent() {
