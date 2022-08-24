@@ -12,4 +12,5 @@ public class Course {
   String name;
   Integer credits;
   String professor;
+  String courseNumber;
 }

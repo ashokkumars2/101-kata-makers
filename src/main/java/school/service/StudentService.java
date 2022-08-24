@@ -2,13 +2,17 @@ package school.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import school.entity.CourseEntity;
 import school.entity.StudentEntity;
+import school.exception.CourseDoesNotExistException;
 import school.exception.StudentDoesNotExistException;
 import school.model.Course;
 import school.model.Student;
+import school.repository.CourseRepository;
 import school.repository.StudentRepository;
 
 @Service
@@ -16,7 +20,10 @@ public class StudentService {
 
   public static final String REGEX_FOR_SPLITTING_LETTERS_AND_DIGITS = "(?<=\\D)(?=\\d)";
   @Autowired
-  StudentRepository studentRepository;
+  private StudentRepository studentRepository;
+
+  @Autowired
+  private CourseRepository courseRepository;
 
   public String createStudent(Student student) {
     StudentEntity studentEntity = new StudentEntity();
@@ -27,6 +34,7 @@ public class StudentService {
     addStudentNumberTo(studentEntity);
 
     studentRepository.save(studentEntity);
+    student.setStudentNumber(studentEntity.getStudentNumber());
 
     return studentEntity.getStudentNumber();
   }
@@ -37,10 +45,11 @@ public class StudentService {
     StudentEntity studentEntity = studentEntityOptional.orElseThrow(
         () -> new StudentDoesNotExistException(id));
 
-    Student student = new Student();
-    student.setFirstName(studentEntity.getFirstName());
-    student.setLastName(studentEntity.getLastName());
-    student.setAge(studentEntity.getAge());
+    Student student = Student.builder()
+        .firstName(studentEntity.getFirstName())
+        .lastName(studentEntity.getLastName())
+        .age(studentEntity.getAge())
+        .build();
 
     List<Course> courses = studentEntity.getCoursesTaken()
         .stream()
@@ -76,8 +85,44 @@ public class StudentService {
     }
   }
 
-  public void enrollStudent(String studentNumber, String courseEntityNumber) {
+  public Student enrollStudent(String studentNumber, String courseEntityNumber)
+      throws StudentDoesNotExistException, CourseDoesNotExistException {
 
-    studentRepository.findByStudentNumber(studentNumber);
+    Optional<StudentEntity> studentEntityOptional = studentRepository.findByStudentNumber(
+        studentNumber);
+    StudentEntity studentEntity = studentEntityOptional.orElseThrow(
+        () -> new StudentDoesNotExistException(studentNumber));
+
+    Optional<CourseEntity> courseEntityOptional = courseRepository.findByCourseNumber(
+        courseEntityNumber);
+    CourseEntity courseEntity = courseEntityOptional.orElseThrow(
+        () -> new CourseDoesNotExistException(courseEntityNumber));
+
+    studentEntity.setCoursesTaken(Set.of(courseEntity));
+
+    studentRepository.save(studentEntity);
+
+    Course course = getCourse(courseEntity);
+
+    return getStudent(studentEntity, course);
+
+  }
+
+  private Student getStudent(StudentEntity studentEntity, Course course) {
+    return Student.builder()
+        .firstName(studentEntity.getFirstName())
+        .lastName(studentEntity.getLastName())
+        .age(studentEntity.getAge())
+        .coursesTaken(List.of(course))
+        .build();
+  }
+
+  private Course getCourse(CourseEntity courseEntity) {
+    return Course.builder()
+        .name(courseEntity.getName())
+        .credits(courseEntity.getCredits())
+        .professor(courseEntity.getProfessor())
+        .courseNumber(courseEntity.getCourseNumber())
+        .build();
   }
 }

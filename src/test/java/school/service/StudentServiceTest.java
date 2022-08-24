@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
@@ -18,8 +17,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import school.entity.CourseEntity;
 import school.entity.StudentEntity;
+import school.exception.CourseDoesNotExistException;
 import school.exception.StudentDoesNotExistException;
+import school.model.Course;
 import school.model.Student;
+import school.repository.CourseRepository;
 import school.repository.StudentRepository;
 
 public class StudentServiceTest {
@@ -32,15 +34,22 @@ public class StudentServiceTest {
   public static final String TEST_STUDENT_NUMBER_UNIQUE_3 = "jablonskae3";
   public static final String TEST_STUDENT_NUMBER_UNIQUE_1 = "jablonskae1";
   public static final String TEST_COURSE_NAME = "History";
+  public static final String TEST_COURSE_NUMBER = "ENG";
 
   @Mock
   private StudentRepository studentRepository;
+
+  @Mock
+  private CourseRepository courseRepository;
+
+  @Mock
+  private Course course;
 
   @InjectMocks
   private StudentService studentService;
 
   @Captor
-  ArgumentCaptor<StudentEntity> argumentCaptor;
+  ArgumentCaptor<StudentEntity> studentEntityArgumentCaptor;
 
   @BeforeEach
   public void setUp() {
@@ -56,9 +65,9 @@ public class StudentServiceTest {
 
     studentService.createStudent(getStudent());
 
-    verify(studentRepository).save(argumentCaptor.capture());
+    verify(studentRepository).save(studentEntityArgumentCaptor.capture());
 
-    StudentEntity result = argumentCaptor.getValue();
+    StudentEntity result = studentEntityArgumentCaptor.getValue();
 
     Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, result.getFirstName());
     Assertions.assertEquals(TEST_STUDENT_LAST_NAME, result.getLastName());
@@ -131,7 +140,8 @@ public class StudentServiceTest {
   @Test
   void shouldCreateUniqueStudentNumberIfNameDoesNotExist() {
 
-    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(new ArrayList<>());
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER)).thenReturn(
+        new ArrayList<>());
     String result = studentService.createStudent(getStudent());
 
     Assertions.assertEquals(TEST_STUDENT_NUMBER, result);
@@ -153,31 +163,46 @@ public class StudentServiceTest {
   @Test
   public void shouldAlwaysCallFindByStudentNumberLikeWithAWildcard() {
 
-    Student student = new Student();
-    student.setFirstName("Susan");
-    student.setLastName("Smith");
+    Student student = Student.builder()
+        .firstName("Susan")
+        .lastName("Smith")
+        .build();
     studentService.createStudent(student);
     verify(studentRepository).findByStudentNumberLike("smiths%");
   }
 
   @Test
-  public void shouldFindStudentByStudentNumber() {
+  public void shouldEnrollAStudentToACourse()
+      throws StudentDoesNotExistException, Exception, CourseDoesNotExistException {
+    StudentEntity studentEntity = new StudentEntity();
+    studentEntity.setStudentNumber(TEST_STUDENT_NUMBER);
+    when(studentRepository.findByStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(
+        Optional.of(studentEntity));
 
-//    find student by student number
-//    find course by course number
-//    add course to the list of courses taken
-//    save student
-    studentService.enrollStudent(TEST_STUDENT_NUMBER, "ENG");
+    CourseEntity courseEntity = new CourseEntity();
+    courseEntity.setCourseNumber(TEST_COURSE_NUMBER);
+    when(courseRepository.findByCourseNumber(TEST_COURSE_NUMBER)).thenReturn(
+        Optional.of(courseEntity));
+
+    String studentNumber = studentService.createStudent(getStudent());
+    Student enrolledStudent = studentService.enrollStudent(TEST_STUDENT_NUMBER, TEST_COURSE_NUMBER);
+
     verify(studentRepository).findByStudentNumber(TEST_STUDENT_NUMBER);
+    verify(courseRepository).findByCourseNumber(TEST_COURSE_NUMBER);
+
+    Assertions.assertEquals(1, enrolledStudent.getCoursesTaken().size());
+    Assertions.assertEquals(TEST_STUDENT_NUMBER, studentNumber);
+    Assertions.assertEquals(TEST_COURSE_NUMBER,
+        enrolledStudent.getCoursesTaken().get(0).getCourseNumber());
+
   }
 
   private Student getStudent() {
-    Student student = new Student();
-
-    student.setFirstName(StudentServiceTest.TEST_STUDENT_FIRST_NAME);
-    student.setLastName(StudentServiceTest.TEST_STUDENT_LAST_NAME);
-    student.setAge(StudentServiceTest.TEST_STUDENT_AGE);
-    return student;
+    return Student.builder()
+        .firstName(StudentServiceTest.TEST_STUDENT_FIRST_NAME)
+        .lastName(StudentServiceTest.TEST_STUDENT_LAST_NAME)
+        .age(StudentServiceTest.TEST_STUDENT_AGE)
+        .build();
   }
 
 }

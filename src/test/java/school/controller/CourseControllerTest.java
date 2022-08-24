@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import school.model.Course;
 import school.service.CourseService;
+import school.service.StudentService;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -28,6 +29,9 @@ public class CourseControllerTest {
   private static final String COURSE_URL = "/course";
   @MockBean
   private CourseService courseService;
+
+  @MockBean
+  private StudentService studentService;
 
   @Captor
   private ArgumentCaptor<Course> courseArgumentCaptor;

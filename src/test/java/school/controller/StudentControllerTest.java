@@ -1,16 +1,15 @@
 package school.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +22,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import school.exception.CourseDoesNotExistException;
 import school.exception.StudentDoesNotExistException;
-import school.model.Course;
 import school.model.Student;
 import school.service.StudentService;
-
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -83,7 +80,7 @@ class StudentControllerTest {
 
     mockMvc.perform(post(STUDENT_URL).contentType(MediaType.APPLICATION_JSON).content(payload))
         .andExpect(status().isOk())
-            .andExpect(content().string("abc"));
+        .andExpect(content().string("abc"));
   }
 
   @Test
@@ -91,15 +88,18 @@ class StudentControllerTest {
 
     when(studentService.findStudentById(1L)).thenReturn(getStudent());
 
-    mockMvc.perform(get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("student-id","1"))
+    mockMvc.perform(
+            get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("student-id", "1"))
         .andExpect(status().isOk())
         .andExpect(content().string(new ObjectMapper().writeValueAsString(getStudent())));
   }
 
   @Test
-  public void shouldEnrollStudentToACourse() throws Exception {
+  public void shouldEnrollStudentToACourse()
+      throws Exception, StudentDoesNotExistException, CourseDoesNotExistException {
 
-    mockMvc.perform(post("/enroll/{studentNumber}/{courseNumber}", TEST_STUDENT_NUMBER, TEST_COURSE_ENTITY_NUMBER))
+    mockMvc.perform(post("/enroll/{studentNumber}/{courseNumber}", TEST_STUDENT_NUMBER,
+            TEST_COURSE_ENTITY_NUMBER))
         .andExpect(status().isOk())
         .andReturn();
 
@@ -107,11 +107,11 @@ class StudentControllerTest {
   }
 
   private Student getStudent() {
-    Student student = new Student();
-    student.setFirstName(TEST_STUDENT_FIRST_NAME);
-    student.setLastName(TEST_STUDENT_LAST_NAME);
-    student.setAge(TEST_STUDENT_AGE);
-    return student;
+    return Student.builder()
+        .firstName(TEST_STUDENT_FIRST_NAME)
+        .lastName(TEST_STUDENT_LAST_NAME)
+        .age(TEST_STUDENT_AGE)
+        .build();
   }
 
 }
