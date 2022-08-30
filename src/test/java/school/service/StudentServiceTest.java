@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
@@ -35,6 +36,7 @@ public class StudentServiceTest {
   public static final String TEST_STUDENT_NUMBER_UNIQUE_1 = "jablonskae1";
   public static final String TEST_COURSE_NAME = "History";
   public static final String TEST_COURSE_NUMBER = "ENG";
+  public static final String TEST_COURSE_NUMBER_TWO = "MAT";
 
   @Mock
   private StudentRepository studentRepository;
@@ -98,7 +100,7 @@ public class StudentServiceTest {
     courseEntity.setId(TEST_ID);
     courseEntity.setName(TEST_COURSE_NAME);
 
-    studentEntity.setCoursesTaken(Set.of(courseEntity));
+    studentEntity.setCoursesTaken(List.of(courseEntity));
 
     when(studentRepository.findById(any())).thenReturn(Optional.of(studentEntity));
 
@@ -172,10 +174,15 @@ public class StudentServiceTest {
   }
 
   @Test
-  public void shouldEnrollAStudentToACourse()
-      throws StudentDoesNotExistException, Exception, CourseDoesNotExistException {
+  public void shouldEnrollAStudentToAnAdditionalCourse()
+      throws StudentDoesNotExistException, CourseDoesNotExistException {
+
+    CourseEntity courseEntityTwo = new CourseEntity();
+    courseEntityTwo.setCourseNumber(TEST_COURSE_NUMBER_TWO);
+
     StudentEntity studentEntity = new StudentEntity();
     studentEntity.setStudentNumber(TEST_STUDENT_NUMBER);
+    studentEntity.setCoursesTaken(List.of(courseEntityTwo));
     when(studentRepository.findByStudentNumber(TEST_STUDENT_NUMBER)).thenReturn(
         Optional.of(studentEntity));
 
@@ -184,17 +191,15 @@ public class StudentServiceTest {
     when(courseRepository.findByCourseNumber(TEST_COURSE_NUMBER)).thenReturn(
         Optional.of(courseEntity));
 
-    String studentNumber = studentService.createStudent(getStudent());
-    Student enrolledStudent = studentService.enrollStudent(TEST_STUDENT_NUMBER, TEST_COURSE_NUMBER);
+    studentService.enrollStudent(studentEntity.getStudentNumber(), courseEntity.getCourseNumber());
 
     verify(studentRepository).findByStudentNumber(TEST_STUDENT_NUMBER);
     verify(courseRepository).findByCourseNumber(TEST_COURSE_NUMBER);
+    verify(studentRepository).save(studentEntityArgumentCaptor.capture());
 
-    Assertions.assertEquals(1, enrolledStudent.getCoursesTaken().size());
-    Assertions.assertEquals(TEST_STUDENT_NUMBER, studentNumber);
-    Assertions.assertEquals(TEST_COURSE_NUMBER,
-        enrolledStudent.getCoursesTaken().get(0).getCourseNumber());
+    StudentEntity result = studentEntityArgumentCaptor.getValue();
 
+    Assertions.assertEquals(2, result.getCoursesTaken().size());
   }
 
   private Student getStudent() {

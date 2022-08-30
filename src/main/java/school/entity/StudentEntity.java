@@ -1,5 +1,6 @@
 package school.entity;
 
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +39,7 @@ public class StudentEntity {
       name = "courses_taken",
       joinColumns = @JoinColumn(name = "student_id"),
       inverseJoinColumns = @JoinColumn(name = "course_id"))
-  Set<CourseEntity> coursesTaken;
+  List<CourseEntity> coursesTaken;
 
 
   public StudentEntity(String firstName, String lastName, Integer age, String studentNumber) {

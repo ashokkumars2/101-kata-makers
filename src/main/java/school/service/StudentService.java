@@ -1,5 +1,6 @@
 package school.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -85,7 +86,7 @@ public class StudentService {
     }
   }
 
-  public Student enrollStudent(String studentNumber, String courseEntityNumber)
+  public void enrollStudent(String studentNumber, String courseEntityNumber)
       throws StudentDoesNotExistException, CourseDoesNotExistException {
 
     Optional<StudentEntity> studentEntityOptional = studentRepository.findByStudentNumber(
@@ -98,31 +99,10 @@ public class StudentService {
     CourseEntity courseEntity = courseEntityOptional.orElseThrow(
         () -> new CourseDoesNotExistException(courseEntityNumber));
 
-    studentEntity.setCoursesTaken(Set.of(courseEntity));
+    List<CourseEntity> studentCourses = new ArrayList<>(studentEntity.getCoursesTaken());
+    studentCourses.add(courseEntity);
+    studentEntity.setCoursesTaken(studentCourses);
 
     studentRepository.save(studentEntity);
-
-    Course course = getCourse(courseEntity);
-
-    return getStudent(studentEntity, course);
-
-  }
-
-  private Student getStudent(StudentEntity studentEntity, Course course) {
-    return Student.builder()
-        .firstName(studentEntity.getFirstName())
-        .lastName(studentEntity.getLastName())
-        .age(studentEntity.getAge())
-        .coursesTaken(List.of(course))
-        .build();
-  }
-
-  private Course getCourse(CourseEntity courseEntity) {
-    return Course.builder()
-        .name(courseEntity.getName())
-        .credits(courseEntity.getCredits())
-        .professor(courseEntity.getProfessor())
-        .courseNumber(courseEntity.getCourseNumber())
-        .build();
   }
 }
