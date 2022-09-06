@@ -24,8 +24,8 @@ public class StudentController {
   }
 
   @GetMapping("/students")
-  public Student getStudent(@RequestParam("student-id") Long id) throws StudentDoesNotExistException {
-    return studentService.findStudentById(id);
+  public Student getStudent(@RequestParam("student-number") String studentNumber) throws StudentDoesNotExistException {
+    return studentService.findStudentByStudentNumber(studentNumber);
   }
 
   @PostMapping("/enroll/{studentNumber}/{courseNumber}")

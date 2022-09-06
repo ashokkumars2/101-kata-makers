@@ -8,7 +8,6 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +36,7 @@ public class StudentServiceTest {
   public static final String TEST_COURSE_NAME = "History";
   public static final String TEST_COURSE_NUMBER = "ENG";
   public static final String TEST_COURSE_NUMBER_TWO = "MAT";
+  public static final String TEST_STUDENT_NUMBER_NON_ALPHANUMERIC = "vandeursenc";
 
   @Mock
   private StudentRepository studentRepository;
@@ -90,33 +90,36 @@ public class StudentServiceTest {
   }
 
   @Test
-  public void shouldReturnTheCorrectStudentWhenFindingById() throws StudentDoesNotExistException {
+  public void shouldReturnTheCorrectStudentWhenFindingByStudentNumber() throws StudentDoesNotExistException {
 
     StudentEntity studentEntity = new StudentEntity();
-    studentEntity.setId(TEST_ID);
+    studentEntity.setStudentNumber(TEST_STUDENT_NUMBER);
     studentEntity.setFirstName(TEST_STUDENT_FIRST_NAME);
 
     CourseEntity courseEntity = new CourseEntity();
     courseEntity.setId(TEST_ID);
     courseEntity.setName(TEST_COURSE_NAME);
+    courseEntity.setCourseNumber(TEST_COURSE_NUMBER);
 
     studentEntity.setCoursesTaken(List.of(courseEntity));
 
-    when(studentRepository.findById(any())).thenReturn(Optional.of(studentEntity));
+    when(studentRepository.findByStudentNumber(any())).thenReturn(Optional.of(studentEntity));
 
-    Student result = studentService.findStudentById(TEST_ID);
+    Student result = studentService.findStudentByStudentNumber(TEST_STUDENT_NUMBER);
 
     Assertions.assertEquals(TEST_STUDENT_FIRST_NAME, result.getFirstName());
+    Assertions.assertEquals(TEST_STUDENT_NUMBER, result.getStudentNumber());
+    Assertions.assertEquals(TEST_COURSE_NUMBER, result.getCoursesTaken().get(0).getCourseNumber());
     Assertions.assertEquals(TEST_COURSE_NAME, result.getCoursesTaken().get(0).getName());
   }
 
   @Test
   public void shouldThrowExceptionWhenStudentDoesNotExist() {
 
-    when(studentRepository.findById(any())).thenReturn(Optional.empty());
+    when(studentRepository.findByStudentNumber(any())).thenReturn(Optional.empty());
 
     Assertions.assertThrows(StudentDoesNotExistException.class,
-        () -> studentService.findStudentById(TEST_ID));
+        () -> studentService.findStudentByStudentNumber(TEST_STUDENT_NUMBER));
   }
 
   @Test
@@ -160,6 +163,20 @@ public class StudentServiceTest {
     String result = studentService.createStudent(getStudent());
 
     Assertions.assertEquals(TEST_STUDENT_NUMBER_UNIQUE_1, result);
+  }
+
+  @Test
+  void shouldCreateUniqueStudentNumberIfNameHasNonAlphanumericCharacters() {
+
+    when(studentRepository.findByStudentNumberLike(TEST_STUDENT_NUMBER_NON_ALPHANUMERIC)).thenReturn(
+        new ArrayList<>());
+    String result = studentService.createStudent(Student.builder()
+        .firstName("Caspar")
+        .lastName("van Deursen")
+        .age(18)
+        .build());
+
+    Assertions.assertEquals(TEST_STUDENT_NUMBER_NON_ALPHANUMERIC, result);
   }
 
   @Test

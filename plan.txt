@@ -25,3 +25,13 @@ Controller(studentNumber, courseNumber) --> StudentService(find student, find co
  - service
  - controller
  - data sql, schema sql
+
+
+ Testing notes:
+
+POST - student
+- Spaces and dashes/other special characters in surnames causing issues with student number - DONE
+
+GET - students
+ - Passing student id in the request, should be student number - DONE
+ - studentNumber and courseNumber are null, need to be populated - DONE

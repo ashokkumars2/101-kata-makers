@@ -86,10 +86,10 @@ class StudentControllerTest {
   @Test
   public void shouldGetStudent() throws Exception, StudentDoesNotExistException {
 
-    when(studentService.findStudentById(1L)).thenReturn(getStudent());
+    when(studentService.findStudentByStudentNumber("jablonskae")).thenReturn(getStudent());
 
     mockMvc.perform(
-            get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("student-id", "1"))
+            get(STUDENTS_URL).contentType(MediaType.APPLICATION_JSON).queryParam("student-number", "jablonskae"))
         .andExpect(status().isOk())
         .andExpect(content().string(new ObjectMapper().writeValueAsString(getStudent())));
   }
