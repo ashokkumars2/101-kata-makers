@@ -55,17 +55,16 @@ class CheckoutTest {
 
   @Test
   void testForValidInputStringWithReservedCharacterAsDelimiterAndGetSum() throws CustomException {
-//    assertThrows(CustomException.class,
-//        () -> checkout.isValidInput("1$2", "$["));
-//    assertFalse(checkout.isValidInput("1$", "$"));
-//    assertFalse(checkout.isValidInput("1", "$"));
-//    assertFalse(checkout.isValidInput("1$2$4$", "$"));
-//    assertFalse(checkout.isValidInput("1$2$$4", "$"));
-//    assertTrue(checkout.isValidInput("1$2$3$4", "$"));
-//    assertThrows(CustomException.class,
-//        () -> checkout.sum("1$2", "$"));
+    assertThrows(CustomException.class,
+        () -> checkout.isValidInput("1$2", "$["));
+    assertFalse(checkout.isValidInput("1$", "$"));
+    assertFalse(checkout.isValidInput("1", "$"));
+    assertFalse(checkout.isValidInput("1$2$4$", "$"));
+    assertFalse(checkout.isValidInput("1$2$$4", "$"));
+    assertTrue(checkout.isValidInput("1$2$3$4", "$"));
+    assertThrows(CustomException.class,
+        () -> checkout.sum("1$2$3$a", "$"));
     assertEquals(10,checkout.sum("1$2$3$4", "$"));
     assertEquals(0,checkout.sum("1$", "$"));
   }
-
 }
