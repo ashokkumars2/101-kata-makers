@@ -44,5 +44,19 @@ public class SkiTest {
     assertEquals(4, skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider));
   }
 
-  
+
+  @Test
+  void skiRiderRideOnlyFiveTimesWithUniqueSkiPass() throws SkiPassExpiredException {
+    SkiRider skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.UNIQUE);
+    skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
+    skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
+    skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
+    skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
+    skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
+    assertThrows(SkiPassExpiredException.class,
+        () -> skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider));
+  }
+
+
+
 }
