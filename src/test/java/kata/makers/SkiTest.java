@@ -13,26 +13,25 @@ import org.junit.jupiter.api.Test;
 public class SkiTest {
 
   private SkiRiding skiRiding;
+  private SkiRider skiRider;
   @BeforeEach
   void setUp(){
     skiRiding = new SkiRiding();
+    skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.NORMAL);
   }
   @Test
   void skiRiderBuysANormalSkiPass(){
-      SkiRider skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.NORMAL);
       assertEquals(1, skiRider.getNoOfRidesLeft());
   }
 
   @Test
   void skiRiderRideOnlyOnceWithNormalSkiPass() throws SkiPassExpiredException {
-    SkiRider skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.NORMAL);
     assertEquals(0, skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider));
   }
 
   @Test
   void throwExceptionWhenSkiRiderRidesMoreThanOnceWithNormalSkiPass()
       throws SkiPassExpiredException {
-    SkiRider skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.NORMAL);
     skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
     assertThrows(SkiPassExpiredException.class,
         () -> skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider));
