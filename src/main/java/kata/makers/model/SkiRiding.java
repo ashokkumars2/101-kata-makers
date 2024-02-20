@@ -16,6 +16,6 @@ public class SkiRiding {
       throw new SkiPassExpiredException("Ski pass is expired.");
     }
     skiRider.setNoOfRidesLeft(noOfRidesLeftForTheRider - 1);
-    return noOfRidesLeftForTheRider;
+    return skiRider.getNoOfRidesLeft();
   }
 }
