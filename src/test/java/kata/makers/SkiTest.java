@@ -1,7 +1,9 @@
 package kata.makers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import kata.makers.exception.SkiPassExpiredException;
 import kata.makers.model.SkiPass;
 import kata.makers.model.SkiRider;
 import kata.makers.model.SkiRiding;
@@ -22,9 +24,18 @@ public class SkiTest {
   }
 
   @Test
-  void skiRiderRideOnlyOnceWithNormalSkiPass(){
+  void skiRiderRideOnlyOnceWithNormalSkiPass() throws SkiPassExpiredException {
     SkiRider skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.NORMAL);
     assertEquals(0, skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider));
+  }
+
+  @Test
+  void throwExceptionWhenSkiRiderRidesMoreThanOnceWithNormalSkiPass()
+      throws SkiPassExpiredException {
+    SkiRider skiRider = skiRiding.buyASkiPass(1, "Person1", SkiPass.NORMAL);
+    skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider);
+    assertThrows(SkiPassExpiredException.class,
+        () -> skiRiding.rideTheSlopeWithDifferentSkiPasses(skiRider));
   }
 
 

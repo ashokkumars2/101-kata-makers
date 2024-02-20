@@ -7,7 +7,7 @@ public enum SkiPass {
   NORMAL(1),
   UNIQUE(5);
 
-  private int noOfRides;
+  private final int noOfRides;
 
   SkiPass(int numberOfRides) {
     noOfRides = numberOfRides;
