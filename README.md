@@ -1,7 +1,7 @@
 # Inventory system
 
 ## Phase 1:
-Create Rest template and get the user name and message
+Create Rest Client and get the user name and message
 
 ## Phase 2:
 
