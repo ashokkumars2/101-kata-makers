@@ -1,6 +1,9 @@
 package kata.makers.service;
 
+
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import kata.makers.model.User;
@@ -14,7 +17,7 @@ public class UserDetailsService {
     users.put(1, new User("John Doe", null, null, null, null, null, null, null, null));
   }
 
-  public Set<User> getAllUsers() {
-    return Set.copyOf(users.values());
+  public Map<Integer, User> getAllUsers() {
+    return users;
   }
 }

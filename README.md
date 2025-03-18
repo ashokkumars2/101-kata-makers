@@ -13,7 +13,7 @@
 #  Delete users
 
 ## The above task has to be achieved using the following endpoints:
-*** User name is mandatory for all the requests ***
+*** User name is mandatory ***
 
 #  GET /users - returns a list of all users ( with id and name) in the system
 #  GET /users/:id - returns a user with the given id[userId can be any format of your choice]

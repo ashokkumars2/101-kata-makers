@@ -10,7 +10,10 @@ class UserDetailsServiceTest {
 
   @Test
   public void ListAllUsers() {
+
     assertEquals(1, userDetailsService.getAllUsers().size());
+    assertEquals("John Doe", userDetailsService.getAllUsers().get(0).name());
+//    assertEquals(1, userDetailsService.getAllUsers().get(0));
   }
 
 }
