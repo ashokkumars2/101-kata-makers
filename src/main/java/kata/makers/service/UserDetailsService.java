@@ -20,4 +20,8 @@ public class UserDetailsService {
   public Map<Integer, User> getAllUsers() {
     return users;
   }
+
+  public User getUserById(int id) {
+    return users.get(id);
+  }
 }

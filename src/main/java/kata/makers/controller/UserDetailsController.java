@@ -1,6 +1,7 @@
 package kata.makers.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import kata.makers.model.User;
 import kata.makers.service.UserDetailsService;
@@ -16,9 +17,15 @@ public class UserDetailsController {
   private UserDetailsService userDetailsService;
 
   @GetMapping("/users")
-  public ResponseEntity<List<User>> getUserDetails() {
+  public ResponseEntity<Map<Integer, User>> getUserDetails() {
     userDetailsService.getAllUsers();
 
     return ResponseEntity.ok().body(userDetailsService.getAllUsers());
+  }
+
+  @GetMapping("/users/{id}")
+  public ResponseEntity<User> getUserDetailsById(int id) {
+    User user = userDetailsService.getUserById(id);
+    return ResponseEntity.ok().body(user);
   }
 }

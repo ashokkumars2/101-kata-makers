@@ -12,8 +12,13 @@ class UserDetailsServiceTest {
   public void ListAllUsers() {
 
     assertEquals(1, userDetailsService.getAllUsers().size());
-    assertEquals("John Doe", userDetailsService.getAllUsers().get(0).name());
+    assertEquals("John Doe", userDetailsService.getAllUsers().get(1).name());
 //    assertEquals(1, userDetailsService.getAllUsers().get(0));
+  }
+
+  @Test
+  public void shouldReturnUserById() {
+    assertEquals("John Doe", userDetailsService.getUserById(1).name());
   }
 
 }
