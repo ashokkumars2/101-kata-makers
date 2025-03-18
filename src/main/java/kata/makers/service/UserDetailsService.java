@@ -14,7 +14,7 @@ public class UserDetailsService {
 
   private static final Map<Integer, User> users = new HashMap<>();
   static {
-    users.put(1, new User("John Doe", null, null, null, null, null, null, null, null));
+    users.put(1, new User(1, "John Doe", null, null, null, null, null, null, null, null));
   }
 
   public Map<Integer, User> getAllUsers() {
@@ -23,5 +23,9 @@ public class UserDetailsService {
 
   public User getUserById(int id) {
     return users.get(id);
+  }
+
+  public void createUser(User user) {
+    users.put(user.id(), user);
   }
 }
